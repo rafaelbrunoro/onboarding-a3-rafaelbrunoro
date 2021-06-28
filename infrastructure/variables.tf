@@ -3,13 +3,13 @@ variable "aws_region" {
 }
 
 variable "base_bucket_name" {
-  default = "my-bucket"
+  default = "onboarding-a3-rafaelbrunoro"
 }
 
 variable "account" {
-  default = 123456789
+  default = 104026193235
 }
 
 variable "lambda_function_name" {
-  default = "my-lambda"
+  default = "onboarding-a3-rafaelbrunoro"
 }

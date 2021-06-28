@@ -1,5 +1,5 @@
 resource "aws_iam_role" "glue_role" {
-  name = "GlueCrawlerRole"
+  name = "OnboardingGlueCrawlerRole"
 
   assume_role_policy = <<EOF
 {
@@ -25,7 +25,7 @@ EOF
 
 
 resource "aws_iam_policy" "glue_policy" {
-  name        = "AWSGlueServiceRole"
+  name        = "OnboardingAWSGlueServiceRole"
   path        = "/"
   description = "Policy for AWS Glue service role which allows access to related services including EC2, S3, and Cloudwatch Logs"
 
@@ -74,20 +74,14 @@ resource "aws_iam_policy" "glue_policy" {
                 "s3:PutObject",
                 "s3:DeleteObject"
             ],
-            "Resource": [
-                "arn:aws:s3:::aws-glue-*/*",
-                "arn:aws:s3:::*/*aws-glue-*/*"
-            ]
+            "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
                 "s3:GetObject"
             ],
-            "Resource": [
-                "arn:aws:s3:::crawler-public*",
-                "arn:aws:s3:::aws-glue-*"
-            ]
+            "Resource": "*"
         },
         {
             "Effect": "Allow",
@@ -133,7 +127,7 @@ resource "aws_iam_role_policy_attachment" "glue_attach" {
 
 
 resource "aws_iam_role" "lambda" {
-  name = "LambdaRole"
+  name = "OnboardingLambdaRole"
 
   assume_role_policy = <<EOF
 {
@@ -160,9 +154,9 @@ EOF
 
 
 resource "aws_iam_policy" "lambda" {
-  name        = "AWSLambdaBasicExecutionRole"
+  name        = "OnboardingAWSLambdaBasicExecutionRole"
   path        = "/"
-  description = "Provides write permissions to CloudWatch Logs."
+  description = "Provides write permissions to CloudWatch Logs and S3 buckets"
 
   policy = <<EOF
 {
@@ -176,6 +170,13 @@ resource "aws_iam_policy" "lambda" {
                 "logs:PutLogEvents"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": "*"
         }
     ]
 }
@@ -187,3 +188,4 @@ resource "aws_iam_role_policy_attachment" "lambda_attach" {
   role       = aws_iam_role.lambda.name
   policy_arn = aws_iam_policy.lambda.arn
 }
+
